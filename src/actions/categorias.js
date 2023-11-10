@@ -71,3 +71,15 @@ export async function update(categoria){
 
 }
 
+export async function carregarDados(){
+    const resp = await fetch(url)
+    
+    if (resp.status !== 200) {
+      alert("erro ao buscar dados das categorias")
+      return
+    } 
+  
+    return await resp.json()
+  
+  }
+

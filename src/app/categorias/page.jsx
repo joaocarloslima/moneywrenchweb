@@ -3,19 +3,7 @@ import NavBar from "@/components/navbar";
 
 import { PlusIcon } from '@heroicons/react/24/solid'
 import DataRow from "./datarow";
-
-async function carregarDados(){
-  const url = "http://localhost:8080/categorias"
-  const resp = await fetch(url)
-  
-  if (resp.status !== 200) {
-    alert("erro ao buscar dados das categorias")
-    return
-  } 
-
-  return await resp.json()
-
-}
+import { carregarDados } from "@/actions/categorias";
 
 export default async function PageCategorias() {
   
