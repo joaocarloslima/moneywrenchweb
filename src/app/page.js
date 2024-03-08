@@ -3,15 +3,28 @@
 import Image from 'next/image'
 import { useForm } from "react-hook-form"
 
-import login from '../assets/login.png'
-import InputText from '@/components/input-text'
 import Button from '@/components/button'
+import InputText from '@/components/input-text'
+import { AuthContext } from '@/context/AuthContext'
+import { useRouter } from 'next/navigation'
+import { useContext } from 'react'
+import { toast } from 'react-hot-toast'
 
 export default function Home() {
+  const { push } = useRouter()
   const { register, handleSubmit } = useForm()
+  const { login } = useContext(AuthContext)
 
-  const onSubmit = (data) => {
-    console.log(data)
+  const onSubmit = async (data) => {
+    const resp = await login(data.email, data.senha)
+    
+    if (resp?.error) {
+      toast.error(resp.error)
+      return
+    }
+
+    push("/dashboard")
+
   }
 
   return (

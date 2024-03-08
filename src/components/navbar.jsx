@@ -2,10 +2,18 @@
 
 import { AuthContext } from "@/context/AuthContext";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useContext } from "react";
 
 export default function NavBar() {
-    const { user, login, logout } = useContext(AuthContext)
+    const { push } = useRouter()
+    const { user, logout } = useContext(AuthContext)
+
+    const handleLogout = () =>{
+        logout()
+        push("/")
+    }
+
     return (
         <nav className="flex items-center justify-between bg-slate-900 p-6">
             <ul className="flex items-end gap-14 text-slate-500">
@@ -23,13 +31,12 @@ export default function NavBar() {
                 <li><Link href="/movimentacoes">movimentações</Link></li>
             </ul>
 
-            <div>
-                <button onClick={() => login("joao@fiap.com.br", "12345678")}>login</button>
-                <button onClick={() => logout()}>logout</button>
-                {user?.name}
+            <div className="flex gap-2 items-center">
+                {user?.email}
                 <div className="h-10 w-10 rounded-full overflow-hidden">
                     <img src="https://github.com/joaocarloslima.png" alt="avatar do usuário" />
                 </div>
+                <button onClick={handleLogout}>logout</button>
             </div>
         </nav>
 

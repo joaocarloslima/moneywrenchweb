@@ -10,7 +10,8 @@ export async function apiLogin(email, senha){
         body: JSON.stringify({email, senha}),
         headers: {
             "Content-Type": "application/json"
-        }
+        },
+        next: { revalidate: 0 }
     }
 
     const resp = await fetch(url, options)
@@ -18,11 +19,10 @@ export async function apiLogin(email, senha){
 
 
     if (resp.status !== 200) {
-        throw new Error("Falha no login")
+        return {error: "Falha no login"}
     } 
 
     const json = await resp.json()
-
 
     //receber o JWT  
 

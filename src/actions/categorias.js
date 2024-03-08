@@ -1,7 +1,10 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { cookies } from 'next/headers'
+
 const url = process.env.NEXT_PUBLIC_API_URL + "/categorias"
+const token = cookies().get('moneywrench_jwt')?.value
 
 export async function create(data){
 
@@ -9,7 +12,8 @@ export async function create(data){
         method: "POST", 
         body: JSON.stringify(Object.fromEntries(data)),
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         }
     }
 
@@ -29,7 +33,10 @@ export async function create(data){
 
 export async function destroy(id){
     const options = {
-        method: "DELETE"
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
     }
     
     const resp = await fetch(url + "/" + id, options)
@@ -43,7 +50,13 @@ export async function destroy(id){
 }
 
 export async function get(id){
-    const resp = await fetch(url + "/" + id)
+    const options = {
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    }
+
+    const resp = await fetch(url + "/" + id, options)
 
     if (resp.status !== 200){
         return { error: "Categoria não encontrada"}
@@ -57,7 +70,8 @@ export async function update(categoria){
         method: "PUT", 
         body: JSON.stringify(categoria),
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         }
     }
 
@@ -72,11 +86,16 @@ export async function update(categoria){
 }
 
 export async function carregarDados(){
-    const resp = await fetch(url)
+    const options = {
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    }
+
+    const resp = await fetch(url, options)
     
     if (resp.status !== 200) {
-      alert("erro ao buscar dados das categorias")
-      return
+      throw new Error(`Falha ao carregar dados da categoria (${resp.status})`)
     } 
   
     return await resp.json()
